@@ -57,17 +57,18 @@ $tournaments[0]->teams = $teams;
 
 // Update configuration
 $app->post('/api/tournaments', function(Request $request, Response $response){
-$name = $request->getParam('name');
-$max_teams = $request->getParam('max_teams');
+  $name = $request->getParam('name');
+  $max_teams = $request->getParam('max_teams');
   $points_per_win = $request->getParam('points_per_win');
   $points_per_draw = $request->getParam('points_per_draw');
   $points_per_lose = $request->getParam('points_per_lose');
+  $max_round = $request->getParam('max_round');
 
   if(!$max_teams){
     $max_teams = 1000;
   }
 
-$sql = "INSERT INTO tournaments (name, max_teams, points_per_win, points_per_draw, points_per_lose, active) VALUES (:name,:max_teams,:points_per_win,:points_per_draw,:points_per_lose,:active)";
+$sql = "INSERT INTO tournaments (name, max_teams, points_per_win, points_per_draw, points_per_lose, active,max_round,current_round,started) VALUES (:name,:max_teams,:points_per_win,:points_per_draw,:points_per_lose,:active,:max_round,:current_round,:started)";
 
   try{
     // Get db object
@@ -77,12 +78,17 @@ $sql = "INSERT INTO tournaments (name, max_teams, points_per_win, points_per_dra
 
     $stmt = $db->prepare($sql);
     $true = true;
-$stmt->bindParam(':name', $name);
-$stmt->bindParam(':max_teams', $max_teams);
-$stmt->bindParam(':active', $true);
+    $zero = 0;
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':max_teams', $max_teams);
+    $stmt->bindParam(':active', $true);
     $stmt->bindParam(':points_per_win', $points_per_win);
     $stmt->bindParam(':points_per_draw', $points_per_draw);
     $stmt->bindParam(':points_per_lose', $points_per_lose);
+    $stmt->bindParam(':max_round', $max_round);
+    $stmt->bindParam(':current_round', $zero);
+    $stmt->bindParam(':started', $zero);
+
     $stmt->execute();
 
     $newResponse = $response->withStatus(200);
