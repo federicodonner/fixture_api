@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 21, 2019 at 09:01 PM
+-- Generation Time: Oct 22, 2019 at 09:14 PM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -32,29 +32,32 @@ CREATE TABLE `matches` (
   `team_1` int(11) NOT NULL,
   `team_2` int(11) NOT NULL,
   `dttm` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `winner` int(11) NOT NULL,
-  `score_team_1` int(11) NOT NULL,
-  `score_team_2` int(11) NOT NULL
+  `winner` int(11) DEFAULT NULL,
+  `score_team_1` int(11) DEFAULT NULL,
+  `score_team_2` int(11) DEFAULT NULL,
+  `round` int(11) NOT NULL,
+  `tournament` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `matches`
 --
 
-INSERT INTO `matches` (`id`, `team_1`, `team_2`, `dttm`, `winner`, `score_team_1`, `score_team_2`) VALUES
-(1, 1, 2, '2019-10-21 18:59:07', 1, 0, 0),
-(2, 1, 3, '2019-10-21 18:59:07', 3, 0, 0),
-(3, 1, 3, '2019-10-21 18:59:07', 1, 10, 20),
-(8, 5, 6, '2019-10-21 19:24:42', 5, 10, 20),
-(15, 5, 6, '2019-10-21 19:27:28', 6, 100, 200),
-(72, 5, 6, '2019-10-21 20:57:41', 6, 100, 200),
-(73, 5, 6, '2019-10-21 20:58:17', 6, 100, 200),
-(74, 5, 6, '2019-10-21 20:58:26', 6, 100, 200),
-(75, 5, 6, '2019-10-21 20:58:51', 6, 100, 200),
-(76, 5, 6, '2019-10-21 20:59:16', 6, 100, 200),
-(80, 5, 6, '2019-10-21 21:00:21', -99, 100, 200),
-(81, 5, 6, '2019-10-21 21:00:39', -99, 100, 200),
-(82, 5, 6, '2019-10-21 21:00:46', 5, 100, 200);
+INSERT INTO `matches` (`id`, `team_1`, `team_2`, `dttm`, `winner`, `score_team_1`, `score_team_2`, `round`, `tournament`) VALUES
+(1, 1, 2, '2019-10-21 18:59:07', 1, 0, 0, 0, 0),
+(2, 1, 3, '2019-10-21 18:59:07', 3, 0, 0, 0, 0),
+(3, 1, 3, '2019-10-21 18:59:07', 1, 10, 20, 0, 0),
+(8, 5, 6, '2019-10-21 19:24:42', 5, 10, 20, 0, 0),
+(15, 5, 6, '2019-10-21 19:27:28', 6, 100, 200, 0, 0),
+(72, 5, 6, '2019-10-21 20:57:41', 6, 100, 200, 0, 0),
+(73, 5, 6, '2019-10-21 20:58:17', 6, 100, 200, 0, 0),
+(74, 5, 6, '2019-10-21 20:58:26', 6, 100, 200, 0, 0),
+(75, 5, 6, '2019-10-21 20:58:51', 6, 100, 200, 0, 0),
+(76, 5, 6, '2019-10-21 20:59:16', 6, 100, 200, 0, 0),
+(80, 5, 6, '2019-10-21 21:00:21', -99, 100, 200, 0, 0),
+(81, 5, 6, '2019-10-21 21:00:39', -99, 100, 200, 0, 0),
+(82, 5, 6, '2019-10-21 21:00:46', 5, 100, 200, 0, 0),
+(84, 7, 8, '2019-10-22 21:13:11', 7, 10, 203, 3, 5);
 
 -- --------------------------------------------------------
 
@@ -84,7 +87,9 @@ INSERT INTO `teams` (`id`, `name`, `player_1`, `player_2`, `points`, `rounds_pla
 (3, 'Nuevo equipo desde postman', 'jugador uno postman', 'jugador dos postman', 0, 0, '2019-10-21 18:58:54', 1),
 (4, 'Nuevo equipo desde postman 2', 'jugador uno postman', 'jugador dos postman', 0, 0, '2019-10-21 19:09:48', 1),
 (5, 'Equipo uno', 'jugador uno postman 2', 'jugador dos postman 2', 8, 10, '2019-10-21 21:00:46', 3),
-(6, 'Equipo dos', 'jugador uno postman', 'jugador dos postman', 20, 10, '2019-10-21 21:00:46', 3);
+(6, 'Equipo dos', 'jugador uno postman', 'jugador dos postman', 20, 10, '2019-10-21 21:00:46', 3),
+(7, 'Nuevo equipo desde postman', 'jugador uno postman', 'jugador dos postman', 3, 1, '2019-10-22 21:08:55', 5),
+(8, 'Nuevo equipo desde postman 2', 'jugador uno postman 2', 'jugador dos postman 2', 7, 1, '2019-10-22 21:08:55', 5);
 
 -- --------------------------------------------------------
 
@@ -101,17 +106,21 @@ CREATE TABLE `tournaments` (
   `points_per_lose` int(11) NOT NULL,
   `max_teams` int(11) NOT NULL,
   `start_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `active` tinyint(4) NOT NULL
+  `active` tinyint(4) NOT NULL,
+  `max_round` int(11) NOT NULL,
+  `current_round` int(11) NOT NULL,
+  `started` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tournaments`
 --
 
-INSERT INTO `tournaments` (`id`, `name`, `points_per_win`, `points_per_draw`, `points_per_lose`, `max_teams`, `start_date`, `active`) VALUES
-(1, 'Torneo desde MAMP', 3, 5, 7, 1, '2019-10-21 19:41:53', 1),
-(3, 'Torneo desde Postman', 3, 1, 0, 1, '2019-10-21 20:59:13', 1),
-(4, 'Torneo desde Postman', 3, 1, 0, 1000, '2019-10-21 20:57:19', 1);
+INSERT INTO `tournaments` (`id`, `name`, `points_per_win`, `points_per_draw`, `points_per_lose`, `max_teams`, `start_date`, `active`, `max_round`, `current_round`, `started`) VALUES
+(1, 'Torneo desde MAMP', 3, 5, 7, 1, '2019-10-21 19:41:53', 1, 0, 0, 0),
+(3, 'Torneo desde Postman', 3, 1, 0, 1, '2019-10-21 20:59:13', 1, 0, 0, 0),
+(4, 'Torneo desde Postman', 3, 1, 0, 1000, '2019-10-21 20:57:19', 1, 0, 0, 0),
+(5, 'Torneo desde Postman 2', 3, 5, 7, 1, '2019-10-22 21:03:30', 1, 5, 3, 0);
 
 --
 -- Indexes for dumped tables
@@ -143,19 +152,19 @@ ALTER TABLE `tournaments`
 -- AUTO_INCREMENT for table `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT for table `teams`
 --
 ALTER TABLE `teams`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tournaments`
 --
 ALTER TABLE `tournaments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
